@@ -1,0 +1,10 @@
+Flask
+pandas
+requests
+boto3
+openpyxl
+PyQt5
+python-dotenv==1.0.0
+Pillow
+pymongo==4.9.1
+mongoengine==0.29.1

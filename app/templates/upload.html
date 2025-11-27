@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Video File</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: start;
+      padding-top: 40px;
+    }
+
+    .upload-container {
+      background-color: white;
+      padding: 2rem 3rem;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input[type="file"] {
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px;
+      background-color: #1976d2;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #125aa3;
+    }
+
+    ul {
+      margin-top: 1rem;
+      padding-left: 1.2rem;
+      text-align: left;
+    }
+
+    #loadingOverlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      font-size: 1.5rem;
+      font-weight: bold;
+      justify-content:center;
+      align-items: center;
+      z-index: 9999;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="upload-container">
+    <h2>Upload File</h2>
+    <form method="POST" enctype="multipart/form-data">
+      <input type="file" name="file" required />
+      <div style="width: 100%;">
+        <button type="submit" style="width: 25%;">Submit</button>
+      </div>
+    </form>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <ul style="color: red;">
+      {% for message in messages %}
+      <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+  </div>
+
+  <div id="loadingOverlay">Processing... Please wait.</div>
+
+  <script>
+    const form = document.querySelector('form');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    function getCookie(name) {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? match[2] : null;
+    }
+
+    function deleteCookie(name) {
+      document.cookie = name + '=; Max-Age=0; path=/';
+    }
+
+    form.addEventListener('submit', () => {
+      loadingOverlay.style.display = 'flex';
+      loadingOverlay.style.paddingTop = '100px';
+      loadingOverlay.style.textAlign = '';
+
+      const checkDownloadCookie = setInterval(() => {
+        if (getCookie('fileDownload') === 'true') {
+          loadingOverlay.style.display = 'none';
+          loadingOverlay.style.paddingTop = '0px'
+          loadingOverlay.style.textAlign = 'center'
+          deleteCookie('fileDownload');
+          clearInterval(checkDownloadCookie);
+          window.location.reload()
+        }
+      }, 500);
+    });
+  </script>
+</body>
+
+</html>
